@@ -1,0 +1,96 @@
+#!/usr/bin/env ruby
+
+require "optparse"
+require "prowl"
+
+config = {}
+
+OptionParser.new do |opts|
+  opts.banner = "Usage: prowlnotify [options] MESSAGE"
+  opts.separator ""
+  opts.separator %Q{Message can be either a string or "-" to read from stdin}
+  opts.separator ""
+  
+  opts.on("-k", "--api-key [KEY]", "Prowl API Key [optional]", "If this isn't specified then ~/.prowl is read") do |key|
+    config[:api_key] = key
+  end
+
+  opts.on("-p", "--priority [VALUE]",
+          "Priority of notification. [optional]",
+          %Q{Defaults to "Normal"},
+          "Value between -2 and 2, or a string:",
+          "\t -2. Very Low",
+          "\t -1. Moderate",
+          "\t  0. Normal",
+          "\t  1. High",
+          "\t  2. Emergency"
+          ) do |priority|
+    strings = {"very low" => -2, "moderate" => -1, "normal" => 0, "high" => 1, "emergency" => 2}
+    if priority.to_i.to_s == priority.to_s
+      # It's an integer
+      config[:priority] = priority.to_i
+    else
+      # It's a string
+      config[:priority] = strings[priority.downcase]
+    end
+  end
+
+  opts.separator ""
+
+  opts.on("-a", "--application [NAME]", "Name of application sending notification. [optional]",
+          %Q{Defaults to "prowlnotify"}) do |name|
+    config[:application] = name
+  end
+
+  opts.on("-s", "--subject [STRING]", "Subject line. [optional]") do |subject|
+    config[:event] = subject
+  end
+
+  opts.on("-r", "--provider-key [KEY]", "Provider API key. [optional]") do |key|
+    config[:provider_key] = key
+  end
+end.parse!
+
+# Setup some defaults for optional args
+config[:priority] ||= 0
+config[:application] ||= "prowlnotify"
+config[:event] ||= ""
+
+# Unless key is specified, read it from ~/.prowl
+config[:api_key] ||= File.open(File.expand_path("~/.prowl"), "r").read
+
+# Grab the message
+config[:description] = ARGV.join(" ")
+
+# Check if we're reading stdin
+if config[:description] == "-"
+  config[:description] = $stdin.read.chomp
+end
+
+# Check we've got what we need to send a notification
+unless config.has_key?(:api_key) && !config[:api_key].empty?
+  puts "ERROR: Missing API key."
+  puts "Either pass it as an argument or put it in ~/.prowl"
+  exit(1)
+end
+
+unless config.has_key?(:description) && !config[:description].empty?
+  puts "ERROR: Missing message text."
+  puts %Q{Either pass it as a string, or pass "-" to read from stdin.}
+  exit(1)
+end
+
+puts "Sending #{config[:description].inspect}"
+
+prowl_hash = {
+  :apikey => config[:api_key],
+  :application => config[:application],
+  :event => config[:event],
+  :description => config[:description]
+}
+
+if config[:provider_key]
+  prowl_hash.merge!(:providerkey => config[:providerkey])
+end
+
+Prowl.add(prowl_hash)
