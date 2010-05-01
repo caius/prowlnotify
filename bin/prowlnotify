@@ -57,7 +57,7 @@ config[:application] ||= "prowlnotify"
 config[:event] ||= ""
 
 # Unless key is specified, read it from ~/.prowl
-config[:api_key] ||= File.open(File.expand_path("~/.prowl"), "r").read
+config[:api_key] ||= File.open(File.expand_path("~/.prowl"), "r").read.chomp
 
 # Grab the message
 config[:description] = ARGV.join(" ")
