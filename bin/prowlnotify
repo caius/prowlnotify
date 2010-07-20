@@ -62,8 +62,12 @@ config[:priority] ||= 0
 config[:application] ||= "prowlnotify"
 config[:event] ||= ""
 
-# Unless key is specified, read it from ~/.prowl
-config[:api_key] ||= File.open(File.expand_path("~/.prowl"), "r").read.chomp
+# Unless key is specified, read it from ~/.prowl if it exists
+# If the key isn't set and file doesn't exist we error later
+api_file = File.expand_path("~/.prowl")
+if !config[:api_key] && File.exists?(api_file)
+  config[:api_key] = File.open(api_file, "r").read.chomp
+end
 
 # Grab the message
 config[:description] = ARGV.join(" ")
