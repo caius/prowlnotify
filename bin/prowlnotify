@@ -96,7 +96,8 @@ prowl_hash = {
   :apikey => config[:api_key],
   :application => config[:application],
   :event => config[:event],
-  :description => config[:description]
+  :description => config[:description],
+  :priority => config[:priority]
 }
 
 if config[:provider_key]
