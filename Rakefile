@@ -2,7 +2,7 @@ require "rake/gempackagetask"
 
 spec = Gem::Specification.new do |s| 
   s.name = "prowlnotify"
-  s.version = "0.2.0"
+  s.version = "0.2.1"
   s.author = "Caius Durling"
   s.email = "dev@caius.name"
   s.homepage = "http://github.com/caius/prowlnotify"
