@@ -17,7 +17,7 @@ OptionParser.new do |opts|
   opts.separator %Q{Message can be either a string or "-" to read from stdin}
   opts.separator ""
   
-  opts.on("-k", "--api-key [KEY]", "Prowl API Key [optional]", "If this isn't specified then ~/.prowl is read") do |key|
+  opts.on("-k", "--api-key [KEY]", "Prowl API Key [optional]", "If this isn't specified then -f arg or ~/.prowl is read") do |key|
     config[:api_key] = key
   end
 
@@ -55,6 +55,10 @@ OptionParser.new do |opts|
   opts.on("-r", "--provider-key [KEY]", "Provider API key. [optional]") do |key|
     config[:provider_key] = key
   end
+
+  opts.on("-f", "--file [FILE]", "File to read API key from. Defaults to ~/.prowl") do |path|
+    config[:api_file] = File.expand_path(path)
+  end
 end.parse!
 
 # Setup some defaults for optional args
@@ -64,9 +68,9 @@ config[:event] ||= ""
 
 # Unless key is specified, read it from ~/.prowl if it exists
 # If the key isn't set and file doesn't exist we error later
-api_file = File.expand_path("~/.prowl")
-if !config[:api_key] && File.exists?(api_file)
-  config[:api_key] = File.open(api_file, "r").read.chomp
+unless config[:api_key]
+  api_file = config[:api_file] || File.expand_path("~/.prowl")
+  config[:api_key] = File.open(api_file, "r").read.chomp if File.exists?(api_file)
 end
 
 # Grab the message
