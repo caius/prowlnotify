@@ -9,7 +9,7 @@ spec = Gem::Specification.new do |s|
   s.platform = Gem::Platform::RUBY
   s.summary = "Easily send prowl notifications from the command line"
   s.bindir = "bin"
-  s.files = FileList["lib/**/*.rb", "bin/*", "[A-Z]*", "spec/**/*"].to_a
+  s.files = FileList["bin/*", "lib/*.rb", "[A-Z]*"].to_a
   s.executables << "prowlnotify"
   s.has_rdoc = false
   s.add_dependency("prowl", "~> 0.1.3")
