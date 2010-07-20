@@ -1,4 +1,11 @@
 #!/usr/bin/env ruby
+# 
+# 
+# CHANGELOG
+#   * 0.2 Gemified
+#   * 0.1.5 Bugfixes, -f
+#   * 0.1.0 Initial Release
+# 
 
 require "optparse"
 # Play nicely with non-rubygemists
