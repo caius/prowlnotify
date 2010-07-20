@@ -63,7 +63,7 @@ OptionParser.new do |opts|
     config[:provider_key] = key
   end
 
-  opts.on("-f", "--file [FILE]", "File to read API key from. Defaults to ~/.prowl") do |path|
+  opts.on("-f", "--file [FILE]", "File to read API key from. Defaults to ~/.prowl. Ignored if -a is passed.") do |path|
     config[:api_file] = File.expand_path(path)
   end
 end.parse!
