@@ -1,7 +1,13 @@
 #!/usr/bin/env ruby
 
 require "optparse"
-require "prowl"
+# Play nicely with non-rubygemists
+begin
+  require "prowl"
+rescue LoadError
+  require "rubygems"
+  require "prowl"
+end
 
 config = {}
 
