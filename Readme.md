@@ -2,6 +2,12 @@
 
 Little cli tool to let you push notifications to your phone. Modelled after `growlnotify` for growl.
 
+## Installation
+
+	[sudo] gem install prowlnotify
+
+## Usage
+
 	Julius:prowlnotify(master) caius$ ./bin/prowlnotify --help
 	Usage: prowlnotify [options] MESSAGE
 
